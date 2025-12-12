@@ -1,0 +1,105 @@
+# JanSpandana.AI - Complete Requirements
+# Voice-first AI grievance redressal system for rural Andhra Pradesh
+
+# Core Web Framework & API
+fastapi
+uvicorn[standard]
+streamlit
+streamlit-webrtc
+
+# Database & ORM
+sqlalchemy
+asyncpg
+psycopg2-binary
+supabase
+alembic
+
+# AI & Language Models
+google-generativeai
+openai
+anthropic
+
+# Google Cloud Services (Speech & Translation)
+google-cloud-speech
+google-cloud-texttospeech
+google-cloud-translate
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+
+# Audio Processing & Voice
+speechrecognition
+pydub
+pyaudio
+soundfile
+librosa
+webrtcvad
+streamlit-mic-recorder
+
+# Environment & Configuration
+python-dotenv
+pydantic
+pydantic-settings
+
+# HTTP & API Clients
+httpx
+
+requests
+
+# Data Processing & Analytics
+pandas
+numpy
+scipy
+
+# Text Processing & NLP
+nltk
+regex
+langdetect
+
+# Async & Concurrency
+asyncio
+
+
+
+# Utilities & Helpers
+python-multipart
+
+
+# Logging & Monitoring
+
+# File Handling & Storage
+pillow
+python-magic
+
+# Timezone & Date Handling
+pytz
+python-dateutil
+
+
+
+# JSON & Data Serialization
+
+
+# Redis (for caching - optional)
+redis
+
+
+# Progress Bars & UI Enhancement
+tqdm
+rich
+
+# Telugu Language Processing (if needed)
+indic-transliteration
+
+
+# WebRTC & Real-time Communication
+
+
+# File Upload & Management
+python-magic-bin
+
+# Environment Detection
+python-dotenv
+
+# API Documentation
+fastapi-users

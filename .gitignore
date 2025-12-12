@@ -1,0 +1,21 @@
+.env
+venv/
+__pycache__/
+.pytest_cache/
+.benchmarks/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+ffmpeg/
+tmp_remote_repo/
+arcane-attic-*.json
+conversation_logs_rows.json
+static/audio/*
+!static/audio/.gitkeep
+
+# Tests and coverage artefacts
+.coverage
+htmlcov/
