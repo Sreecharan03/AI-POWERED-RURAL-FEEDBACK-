@@ -130,7 +130,7 @@ class AIConversationDataProcessor:
             
             # Step 4: Save conversation logs with AI insights
             logs_result = await self._save_ai_enhanced_conversation_logs(
-                conversation_state, grievance_id, ai_analysis
+                conversation_state, grievance_id, ai_analysis, conversation_id
             )
             if not logs_result['success']:
                 logger.warning(f"Conversation logs failed: {logs_result['error']}")
@@ -545,7 +545,8 @@ class AIConversationDataProcessor:
         return '\n'.join(user_responses)
     
     async def _save_ai_enhanced_conversation_logs(self, conversation_state: Dict[str, Any], 
-                                                 grievance_id: str, ai_analysis: Dict[str, Any]) -> Dict[str, Any]:
+                                                 grievance_id: str, ai_analysis: Dict[str, Any],
+                                                 conversation_id: str) -> Dict[str, Any]:
         """
         Save detailed conversation logs enhanced with AI insights
         """
@@ -569,6 +570,7 @@ class AIConversationDataProcessor:
                     log_data = {
                         'id': str(uuid.uuid4()),
                         'grievance_id': grievance_id,
+                        'conversation_id': conversation_id,
                         'question_sequence': i + 1,
                         'question_asked_telugu': entry.get('ai_response', ''),
                         'question_asked_english': f"AI question #{i + 1}",
@@ -578,7 +580,9 @@ class AIConversationDataProcessor:
                         'response_length_words': len(entry['user_input'].split()),
                         'ai_confidence_score': entry.get('ai_confidence_score', 
                                                         ai_analysis.get('sentiment_analysis', {}).get('confidence', 0.8)),
-                        'timestamp': entry.get('timestamp', datetime.now(timezone.utc).isoformat())
+                        'timestamp': entry.get('timestamp', datetime.now(timezone.utc).isoformat()),
+                        'stage': entry.get('stage', conversation_state.get('stage')),
+                        'question_count': entry.get('question_count')
                     }
                     
                     # Save individual log entry
