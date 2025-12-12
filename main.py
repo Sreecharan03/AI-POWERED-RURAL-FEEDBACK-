@@ -983,6 +983,90 @@ def _generate_ai_optimization_recommendations() -> List[str]:
     
     return recommendations
 
+async def seed_mock_data():
+    """
+    Lightweight mock data seeder to validate DB logging and analytics.
+    Only runs when SEED_MOCK_DATA=true is set to avoid polluting prod data.
+    """
+    if os.getenv("SEED_MOCK_DATA", "false").lower() != "true":
+        return
+    
+    now = datetime.now(timezone.utc)
+    conversation_id = f"mock_conv_{uuid.uuid4().hex[:8]}"
+    user_payload = {
+        "id": str(uuid.uuid4()),
+        "name": "Mock User",
+        "gender": "female",
+        "phone_number": "9999999999",
+        "village_name": "Demo Village",
+        "mandal_name": "Demo Mandal",
+        "district_name": "Demo District",
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
+        "is_active": True,
+    }
+    
+    grievance_payload = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_payload["id"],
+        "primary_sector": "infrastructure",
+        "complaint_category": "roads",
+        "urgency_level": "medium",
+        "problem_summary_telugu": "Mock issue: రహదారి పాడైంది",
+        "problem_summary_english": "Mock issue: road damaged",
+        "status": "open",
+        "priority_score": 5,
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
+    }
+    
+    log_entries = [
+        {
+            "user_input": "రహదారి పూర్తిగా దెబ్బతింది",
+            "ai_response": "ఎన్ని రోజులు నుంచి ఈ సమస్య ఉంది?",
+            "stage": "detailed_inquiry",
+            "question_count": 1,
+            "ai_reasoning": "Sample log for testing",
+        },
+        {
+            "user_input": "మూడునెలల నుంచి ఉంది",
+            "ai_response": "గ్రామంలో మరెవరైనా ప్రభావితం అయ్యారా?",
+            "stage": "confirmation",
+            "question_count": 2,
+            "ai_reasoning": "Sample log for testing",
+        },
+    ]
+    
+    try:
+        logger.info("Seeding mock data for analytics validation...")
+        await db_ops.create_user(user_payload)
+        await db_ops.create_grievance(grievance_payload)
+        
+        for entry in log_entries:
+            await db_ops.log_conversation_step(
+                {
+                    "conversation_id": conversation_id,
+                    "user_input": entry["user_input"],
+                    "ai_response": entry["ai_response"],
+                    "stage": entry.get("stage"),
+                    "question_count": entry.get("question_count"),
+                    "timestamp": now.isoformat(),
+                    "audio_metadata": None,
+                    "ai_reasoning": entry.get("ai_reasoning"),
+                    "ai_fallback_used": False,
+                    "ai_confidence": 0.9,
+                }
+            )
+        
+        logger.info(
+            "Mock data seeded: user=%s grievance=%s conversation_id=%s",
+            user_payload["id"],
+            grievance_payload["id"],
+            conversation_id,
+        )
+    except Exception as exc:
+        logger.error(f"Mock data seed failed: {exc}")
+
 # Enhanced error handlers
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -1010,6 +1094,9 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Development server runner
 if __name__ == "__main__":
+    # Optional: seed mock data for quick manual verification
+    asyncio.run(seed_mock_data())
+    
     logger.info("Starting JanSpandana.AI Enhanced FastAPI Backend Server")
     uvicorn.run(
         "main:app",
