@@ -15,6 +15,7 @@ arcane-attic-*.json
 conversation_logs_rows.json
 static/audio/*
 !static/audio/.gitkeep
+**/static/audio/*.mp3
 
 # Tests and coverage artefacts
 .coverage
